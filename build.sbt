@@ -2,6 +2,7 @@ name := "Gatling-UDP"
 
 version := "1.0.15"
 scalaVersion := "2.11.8"
+organization := "io.github.gatling.udp"
 
 libraryDependencies ++= Seq(
   "io.gatling" % "gatling-core" % "2.2.2" % "provided"
