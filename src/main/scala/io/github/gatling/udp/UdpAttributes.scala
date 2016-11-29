@@ -23,4 +23,6 @@
  */
 package io.github.gatling.udp
 
-case class UdpAttributes(tag: String, message: String)
+import io.gatling.core.session.Expression
+
+case class UdpAttributes[A](tag: String, message: Expression[A])

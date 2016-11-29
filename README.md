@@ -13,6 +13,7 @@ Tested on versions
 * Will not take care of UDP responses, simply fire and forget.
 * Not optimised for performance.
 * Will always return OK to Gatling.
+* Send method will only be able to process String or Array[Byte]
 
 ## Usage
 
@@ -39,7 +40,7 @@ and run `sbt assembly`.
 ### Scenario Example
 
 * udp("RequestName") RequestName that will be shown in the report.
-* sendUnconnected("Message") UDP Message to be sent as a String.
+* sendUnconnected("Message") UDP Message to be sent as a String or Array[Byte].
 
 ```scala
 import io.github.gatling.udp.Predef._

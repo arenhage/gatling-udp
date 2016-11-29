@@ -33,10 +33,11 @@ import io.gatling.core.session.Session
 import io.gatling.core.stats.StatsEngine
 import io.gatling.core.stats.message.ResponseTimings
 import io.github.gatling.udp.UdpProtocol
+import io.gatling.core.session.Expression
 
-class UdpSendAction(
+class UdpSendAction[A](
    val name: String,
-   val message: String,
+   val message: Expression[A],
    val next: Action,
    system: ActorSystem,
    val statsEngine: StatsEngine,
@@ -44,17 +45,22 @@ class UdpSendAction(
 
   override def execute(session: Session): Unit = {
     val start = nowMillis
-    send(message, protocol)
+
+    val byteArray: Array[Byte] = message(session).get match {
+      case s: String => s.getBytes()
+      case s: Array[Byte] => s
+      case _ => throw new Exception("Bad type")
+    }
+
+    send(byteArray, protocol)
     statsEngine.logResponse(session, name, ResponseTimings(start, nowMillis), OK, None, None, Nil)
     next ! session.markAsSucceeded
   }
 
-  def send(message: String, protocol: UdpProtocol): Unit = {
+  def send(message: Array[Byte], protocol: UdpProtocol): Unit = {
     val clientSocket = new DatagramSocket()
     val IPAddress = InetAddress.getByName(protocol.address)
-    var sendData = new Array[Byte](1024)
-    sendData = message.getBytes()
-    val sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, protocol.port);
+    val sendPacket = new DatagramPacket(message, message.length, IPAddress, protocol.port);
     clientSocket.send(sendPacket)
     clientSocket.close()
   }

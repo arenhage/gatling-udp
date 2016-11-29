@@ -1,6 +1,6 @@
 name := "Gatling-UDP"
 
-version := "1.0.15"
+version := "1.0.16"
 scalaVersion := "2.11.8"
 organization := "io.github.gatling.udp"
 

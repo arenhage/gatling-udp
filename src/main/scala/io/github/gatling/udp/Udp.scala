@@ -23,8 +23,9 @@
  */
 package io.github.gatling.udp
 
+import io.gatling.core.session.Expression
 import io.github.gatling.udp.action.UdpSendActionBuilder
 
 class Udp(tag: String) {
-  def sendUnconnected(message: String) = new UdpSendActionBuilder(new UdpAttributes(tag, message))
+  def sendUnconnected[A](message: Expression[A]) = new UdpSendActionBuilder(new UdpAttributes(tag, message))
 }
