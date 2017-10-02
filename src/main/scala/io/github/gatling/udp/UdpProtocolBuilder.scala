@@ -23,16 +23,17 @@
  */
 package io.github.gatling.udp
 
-import com.typesafe.scalalogging.StrictLogging
+import io.gatling.core.config.GatlingConfiguration
 
-case object UdpProtocolBuilderAddress {
-  def address(address: String) = UdpProtocolBuilderPort(address)
+object UdpProtocolBuilder {
+
+  implicit def toUdpProtocol(builder: UdpProtocolBuilder): UdpProtocol = builder.build
+
+  def apply(configuration: GatlingConfiguration): UdpProtocolBuilder =
+    UdpProtocolBuilder(UdpProtocol(configuration))
+
 }
 
-case class UdpProtocolBuilderPort(address: String) {
-  def port(port: Int) = UdpProtocolBuilder(address, port)
-}
-
-case class UdpProtocolBuilder(address: String, port: Int) extends StrictLogging {
-  def build = new UdpProtocol(address = address, port = port)
+case class UdpProtocolBuilder(udpProtocol: UdpProtocol) {
+  def build = udpProtocol
 }

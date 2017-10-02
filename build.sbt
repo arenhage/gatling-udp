@@ -1,11 +1,11 @@
 name := "Gatling-UDP"
 
-version := "1.0.16"
-scalaVersion := "2.11.8"
+version := "2.0.0"
+scalaVersion := "2.12.0"
 organization := "io.github.gatling.udp"
 
 libraryDependencies ++= Seq(
-  "io.gatling" % "gatling-core" % "2.2.2" % "provided"
+  "io.gatling" % "gatling-core" % "2.3.0" % "provided"
 )
 
 // Gatling contains scala-library

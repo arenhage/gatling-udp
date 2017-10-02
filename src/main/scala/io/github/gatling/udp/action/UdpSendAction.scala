@@ -27,21 +27,20 @@ import java.net.{DatagramPacket, DatagramSocket, InetAddress}
 
 import akka.actor.ActorSystem
 import io.gatling.commons.stats.OK
-import io.gatling.commons.util.TimeHelper._
+import io.gatling.commons.util.ClockSingleton.nowMillis
 import io.gatling.core.action.{Action, ExitableAction}
-import io.gatling.core.session.Session
+import io.gatling.core.session.{Expression, Session}
 import io.gatling.core.stats.StatsEngine
 import io.gatling.core.stats.message.ResponseTimings
-import io.github.gatling.udp.UdpProtocol
-import io.gatling.core.session.Expression
+import io.github.gatling.udp.UdpComponents
 
 class UdpSendAction[A](
-   val name: String,
-   val message: Expression[A],
-   val next: Action,
-   system: ActorSystem,
-   val statsEngine: StatsEngine,
-   protocol: UdpProtocol) extends ExitableAction {
+                        val name: String,
+                        val message: Expression[A],
+                        val next: Action,
+                        system: ActorSystem,
+                        val statsEngine: StatsEngine,
+                        udpComponents: UdpComponents) extends ExitableAction {
 
   override def execute(session: Session): Unit = {
     val start = nowMillis
@@ -52,15 +51,15 @@ class UdpSendAction[A](
       case _ => throw new Exception("Bad type")
     }
 
-    send(byteArray, protocol)
+    send(byteArray, udpComponents)
     statsEngine.logResponse(session, name, ResponseTimings(start, nowMillis), OK, None, None, Nil)
     next ! session.markAsSucceeded
   }
 
-  def send(message: Array[Byte], protocol: UdpProtocol): Unit = {
+  def send(message: Array[Byte], udpComponents: UdpComponents): Unit = {
     val clientSocket = new DatagramSocket()
-    val IPAddress = InetAddress.getByName(protocol.address)
-    val sendPacket = new DatagramPacket(message, message.length, IPAddress, protocol.port);
+    val IPAddress = InetAddress.getByName(udpComponents.udpProtocol.host)
+    val sendPacket = new DatagramPacket(message, message.length, IPAddress, udpComponents.udpProtocol.port);
     clientSocket.send(sendPacket)
     clientSocket.close()
   }

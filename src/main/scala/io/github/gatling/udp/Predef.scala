@@ -23,8 +23,10 @@
  */
 package io.github.gatling.udp
 
+import io.gatling.core.config.GatlingConfiguration
+
 object Predef {
-  val udp = UdpProtocolBuilderAddress
+  def udpConfig(implicit configuration: GatlingConfiguration) = UdpProtocolBuilder(configuration)
+
   def udp(tag: String) = new Udp(tag)
-  implicit def udpBuilderToProtocol(builder: UdpProtocolBuilder): UdpProtocol = builder.build
 }

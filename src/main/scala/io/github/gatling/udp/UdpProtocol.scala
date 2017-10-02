@@ -23,6 +23,39 @@
  */
 package io.github.gatling.udp
 
-import io.gatling.core.protocol.Protocol
+import akka.actor.ActorSystem
+import io.gatling.core.CoreComponents
+import io.gatling.core.config.GatlingConfiguration
+import io.gatling.core.protocol.{Protocol, ProtocolKey}
 
-case class UdpProtocol(address: String, port: Int) extends Protocol
+object UdpProtocol {
+
+  def apply(configuration: GatlingConfiguration): UdpProtocol = UdpProtocol(
+    host = "localhost",
+    port = 0
+  )
+
+  val UdpProtocolKey = new ProtocolKey {
+
+    type Protocol = UdpProtocol
+    type Components = UdpComponents
+
+    def protocolClass: Class[io.gatling.core.protocol.Protocol] =
+      classOf[UdpProtocol].asInstanceOf[Class[io.gatling.core.protocol.Protocol]]
+
+    def defaultProtocolValue(configuration: GatlingConfiguration): UdpProtocol =
+      UdpProtocol(configuration)
+
+    def newComponents(system: ActorSystem, coreComponents: CoreComponents): UdpProtocol => UdpComponents = {
+      udpProtocol => UdpComponents(udpProtocol)
+    }
+  }
+}
+
+case class UdpProtocol(host: String, port: Int) extends Protocol {
+
+  def host(host: String): UdpProtocol = copy(host = host)
+
+  def port(port: Int): UdpProtocol = copy(port = port)
+
+}

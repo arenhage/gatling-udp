@@ -5,8 +5,8 @@ A very simple fire-and-forget UDP sender for Gatling.
 
 Tested on versions
 
-* Gatling: **2.2.2**
-* Scala: **2.11.8**
+* Gatling: **2.3.0**
+* Scala: **2.12.0**
 
 ## Restrictions
 * The only "measurement" that is being captured is the time from send datagram -> close socket.
@@ -24,7 +24,7 @@ Tested on versions
 To change the Gatling version, change the following line in [`build.sbt`](build.sbt):
 
 ```scala
-"io.gatling" % "gatling-core" % "2.2.2" % "provided"
+"io.gatling" % "gatling-core" % "2.3.0" % "provided"
 ```
 
 and run `sbt assembly`.
@@ -45,8 +45,8 @@ and run `sbt assembly`.
 ```scala
 import io.github.gatling.udp.Predef._
 
-val udpConf = udp
-    .address("localhost")
+val udpConf = udpConfig.build
+    .host("localhost")
     .port(1234)
 
 val scn = scenario("Udp Test")

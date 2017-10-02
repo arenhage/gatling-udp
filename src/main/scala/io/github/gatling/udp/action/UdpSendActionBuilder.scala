@@ -27,15 +27,13 @@ import io.gatling.core.action.Action
 import io.gatling.core.action.builder.ActionBuilder
 import io.gatling.core.structure.ScenarioContext
 import io.gatling.core.util.NameGen
-import io.github.gatling.udp.{UdpAttributes, UdpProtocol}
+import io.github.gatling.udp.{UdpAttributes, UdpComponents, UdpProtocol}
 
 class UdpSendActionBuilder[A](attr: UdpAttributes[A]) extends ActionBuilder with NameGen {
 
-  override def build(ctx: ScenarioContext, next: Action): Action =  {
-    val udpProtocol = ctx.protocolComponentsRegistry.protocols.protocol[UdpProtocol].getOrElse(
-      throw new UnsupportedOperationException("UDP protocol wasn't registered"))
-
-    new UdpSendAction("UDP:" + attr.tag, attr.message, next, ctx.system, ctx.coreComponents.statsEngine, udpProtocol)
+  override def build(ctx: ScenarioContext, next: Action): Action = {
+    val udpComponents: UdpComponents = ctx.protocolComponentsRegistry.components(UdpProtocol.UdpProtocolKey)
+    new UdpSendAction("UDP:" + attr.tag, attr.message, next, ctx.system, ctx.coreComponents.statsEngine, udpComponents)
   }
 
 }
